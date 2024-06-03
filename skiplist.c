@@ -12,7 +12,7 @@
 #include "skiplist.h"
 
 
-skiplistNode *slCreateNode(int level, double score, slobj *obj) {
+skiplistNode *slCreateNode(int level, int64_t score, slobj *obj) {
     skiplistNode *n = malloc(sizeof(*n) + level * sizeof(struct skiplistLevel));
     n->score = score;
     n->obj   = obj;
@@ -88,7 +88,7 @@ int equalslObj(slobj *a, slobj *b) {
     return compareslObj(a, b) == 0;
 }
 
-void slInsert(skiplist *sl, double score, slobj *obj) {
+void slInsert(skiplist *sl, int64_t score, slobj *obj) {
     skiplistNode *update[SKIPLIST_MAXLEVEL], *x;
     unsigned int rank[SKIPLIST_MAXLEVEL];
     int i, level;
@@ -164,7 +164,7 @@ void slDeleteNode(skiplist *sl, skiplistNode *x, skiplistNode **update) {
 }
 
 /* Delete an element with matching score/object from the skiplist. */
-int slDelete(skiplist *sl, double score, slobj *obj) {
+int slDelete(skiplist *sl, int64_t score, slobj *obj) {
     skiplistNode *update[SKIPLIST_MAXLEVEL], *x;
     int i;
 
@@ -192,7 +192,7 @@ int slDelete(skiplist *sl, double score, slobj *obj) {
 
 /* Delete all the elements with score between min and max from the skiplist.
  * Both min and max are inclusive. */
-unsigned long slDeleteByScore(skiplist *sl, double min, double max, slDeleteCb cb, void* ud) {
+unsigned long slDeleteByScore(skiplist *sl, int64_t min, int64_t max, slDeleteCb cb, void* ud) {
     skiplistNode *update[SKIPLIST_MAXLEVEL], *x;
     unsigned long removed = 0;
     int i;
@@ -253,7 +253,7 @@ unsigned long slDeleteByRank(skiplist *sl, unsigned int start, unsigned int end,
  * Returns 0 when the element cannot be found, rank otherwise.
  * Note that the rank is 1-based due to the span of sl->header to the
  * first element. */
-unsigned long slGetRank(skiplist *sl, double score, slobj *o) {
+unsigned long slGetRank(skiplist *sl, int64_t score, slobj *o) {
     skiplistNode *x;
     unsigned long rank = 0;
     int i;
@@ -303,7 +303,7 @@ skiplistNode* slGetNodeByRank(skiplist *sl, unsigned long rank) {
 
 /* range [min, max], left & right both include */
 /* Returns if there is a part of the zset is in range. */
-int slIsInRange(skiplist *sl, double min, double max) {
+int slIsInRange(skiplist *sl, int64_t min, int64_t max) {
     skiplistNode *x;
 
     /* Test for ranges that will always be empty. */
@@ -322,7 +322,7 @@ int slIsInRange(skiplist *sl, double min, double max) {
 
 /* Find the first node that is contained in the specified range.
  * Returns NULL when no element is contained in the range. */
-skiplistNode *slFirstInRange(skiplist *sl, double min, double max) {
+skiplistNode *slFirstInRange(skiplist *sl, int64_t min, int64_t max) {
     skiplistNode *x;
     int i;
 
@@ -343,7 +343,7 @@ skiplistNode *slFirstInRange(skiplist *sl, double min, double max) {
 
 /* Find the last node that is contained in the specified range.
  * Returns NULL when no element is contained in the range. */
-skiplistNode *slLastInRange(skiplist *sl, double min, double max) {
+skiplistNode *slLastInRange(skiplist *sl, int64_t min, int64_t max) {
     skiplistNode *x;
     int i;
 
@@ -371,7 +371,7 @@ void slDump(skiplist *sl) {
     while(x->level[0].forward) {
         x = x->level[0].forward;
         i++;
-        printf("node %d: score:%f, member:%s\n", i, x->score, x->obj->ptr);
+        printf("node %d: score:%lld, member:%s\n", i, x->score, x->obj->ptr);
     }
 }
 

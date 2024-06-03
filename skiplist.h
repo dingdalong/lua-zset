@@ -11,7 +11,7 @@ typedef struct slobj {
 
 typedef struct skiplistNode {
     slobj* obj;
-    double score;
+    int64_t score;
     struct skiplistNode *backward;
     struct skiplistLevel {
         struct skiplistNode *forward;
@@ -33,14 +33,14 @@ skiplist *slCreate(void);
 void slFree(skiplist *sl);
 void slDump(skiplist *sl);
 
-void slInsert(skiplist *sl, double score, slobj *obj);
-int slDelete(skiplist *sl, double score, slobj *obj);
-unsigned long slDeleteByScore(skiplist *sl, double min, double max, slDeleteCb cb, void* ud);
+void slInsert(skiplist *sl, int64_t score, slobj *obj);
+int slDelete(skiplist *sl, int64_t score, slobj *obj);
+unsigned long slDeleteByScore(skiplist *sl, int64_t min, int64_t max, slDeleteCb cb, void* ud);
 unsigned long slDeleteByRank(skiplist *sl, unsigned int start, unsigned int end, slDeleteCb cb, void* ud);
 
-unsigned long slGetRank(skiplist *sl, double score, slobj *o);
+unsigned long slGetRank(skiplist *sl, int64_t score, slobj *o);
 skiplistNode* slGetNodeByRank(skiplist *sl, unsigned long rank);
 
-skiplistNode *slFirstInRange(skiplist *sl, double min, double max);
-skiplistNode *slLastInRange(skiplist *sl, double min, double max);
+skiplistNode *slFirstInRange(skiplist *sl, int64_t min, int64_t max);
+skiplistNode *slLastInRange(skiplist *sl, int64_t min, int64_t max);
 

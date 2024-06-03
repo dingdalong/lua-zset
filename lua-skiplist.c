@@ -22,7 +22,7 @@ _to_skiplist(lua_State *L) {
 static int
 _insert(lua_State *L) {
     skiplist *sl = _to_skiplist(L);
-    double score = luaL_checknumber(L, 2);
+    int64_t score = luaL_checknumber(L, 2);
     luaL_checktype(L, 3, LUA_TSTRING);
     size_t len;
     const char* ptr = lua_tolstring(L, 3, &len);
@@ -34,7 +34,7 @@ _insert(lua_State *L) {
 static int
 _delete(lua_State *L) {
     skiplist *sl = _to_skiplist(L);
-    double score = luaL_checknumber(L, 2);
+    int64_t score = luaL_checknumber(L, 2);
     luaL_checktype(L, 3, LUA_TSTRING);
     slobj obj;
     obj.ptr = (char *)lua_tolstring(L, 3, &obj.length);
@@ -53,11 +53,11 @@ _delete_cb(void* ud, slobj *obj) {
 static int
 _delete_by_score(lua_State *L) {
     skiplist *sl = _to_skiplist(L);
-    double min = luaL_checkinteger(L, 2);
-    double max = luaL_checkinteger(L, 3);
+    int64_t min = luaL_checkinteger(L, 2);
+    int64_t max = luaL_checkinteger(L, 3);
     luaL_checktype(L, 4, LUA_TFUNCTION);
     if (min > max) {
-        double tmp = min;
+        int64_t tmp = min;
         min = max;
         max = tmp;
     }
@@ -92,7 +92,7 @@ _get_count(lua_State *L) {
 static int
 _get_rank(lua_State *L) {
     skiplist *sl = _to_skiplist(L);
-    double score = luaL_checknumber(L, 2);
+    int64_t score = luaL_checknumber(L, 2);
     luaL_checktype(L, 3, LUA_TSTRING);
     slobj obj;
     obj.ptr = (char *)lua_tolstring(L, 3, &obj.length);
@@ -130,16 +130,16 @@ _get_rank_range(lua_State *L) {
         lua_pushlstring(L, node->obj->ptr, node->obj->length);
         lua_rawseti(L, -2, n);
         node = reverse? node->backward : node->level[0].forward;
-    } 
+    }
     return 1;
 }
 
 static int
 _get_score_range(lua_State *L) {
     skiplist *sl = _to_skiplist(L);
-    double s1 = luaL_checknumber(L, 2);
-    double s2 = luaL_checknumber(L, 3);
-    int reverse; 
+    int64_t s1 = luaL_checknumber(L, 2);
+    int64_t s2 = luaL_checknumber(L, 3);
+    int reverse;
     skiplistNode *node;
 
     if(s1 <= s2) {
